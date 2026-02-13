@@ -23,6 +23,7 @@ namespace CS2_SimpleAdmin;
 public partial class CS2_SimpleAdmin : BasePlugin, IPluginConfig<CS2_SimpleAdminConfig>
 {
     internal static CS2_SimpleAdmin Instance { get; private set; } = new();
+	internal string DataPath = "";
 
     public override string ModuleName => "CS2-SimpleAdmin" + (Helper.IsDebugBuild ? " (DEBUG)" : " (RELEASE)");
     public override string ModuleDescription => "Simple admin plugin for Counter-Strike 2 :)";
@@ -171,7 +172,24 @@ public partial class CS2_SimpleAdmin : BasePlugin, IPluginConfig<CS2_SimpleAdmin
             Server.ExecuteCommand($"css_plugins unload {ModuleName}");
 
         Instance = this;
+		
+		// Navigate up 4 levels to reach 'game/csgo/'
+		DirectoryInfo? rootDirInfo = Directory.GetParent(ModuleDirectory)?.Parent?.Parent?.Parent;
 
+		if (rootDirInfo != null && config.DataFolder != null)
+		{
+			// Clean the config string to prevent absolute path errors (removing leading slashes)
+			string subFolder = config.DataFolder.TrimStart('/', '\\');
+			
+			// Combine game/csgo/ with your subfolder
+			DataPath = Path.Combine(rootDirInfo.FullName, subFolder);
+		}
+		else
+		{
+			// Fallback if the directory structure is unexpected
+			DataPath = Path.Combine(ModuleDirectory, "data");
+		}
+		
         if (Config.DatabaseConfig.DatabaseType.Contains("mysql", StringComparison.CurrentCultureIgnoreCase))
         {
             if (string.IsNullOrWhiteSpace(config.DatabaseConfig.DatabaseHost) ||
@@ -219,10 +237,10 @@ public partial class CS2_SimpleAdmin : BasePlugin, IPluginConfig<CS2_SimpleAdmin
 
         Task.Run(() => DatabaseProvider.DatabaseMigrationAsync());
 
-        if (!Directory.Exists(ModuleDirectory + "/data"))
-        {
-            Directory.CreateDirectory(ModuleDirectory + "/data");
-        }
+        if (!Directory.Exists(DataPath))
+		{
+			Directory.CreateDirectory(DataPath);
+		}
 
         _localizer = Localizer;
 

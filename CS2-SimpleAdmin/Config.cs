@@ -305,6 +305,9 @@ public class CS2_SimpleAdminConfig : BasePluginConfig
     [JsonPropertyName("DefaultServerIP")]
     public string DefaultServerIP { get; set; } = "";
 
+    [JsonPropertyName("DataFolder")]
+    public string? DataFolder { get; set; } = null;
+
     [JsonPropertyName("ChatLog")]
     public ChatLog ChatLog { get; set; } = new ChatLog();
 

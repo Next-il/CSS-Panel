@@ -396,7 +396,7 @@ public class PermissionManager(IDatabaseProvider? databaseProvider, CS2_SimpleAd
 		};
 
 		var json = JsonSerializer.Serialize(jsonData, options);
-		var filePath = Path.Combine(CS2_SimpleAdmin.Instance.ModuleDirectory, "data", "groups.json");
+		var filePath = Path.Combine(CS2_SimpleAdmin.Instance.DataPath, "groups.json");
 		await File.WriteAllTextAsync(filePath, json);
 	}
 
@@ -603,7 +603,7 @@ public class PermissionManager(IDatabaseProvider? databaseProvider, CS2_SimpleAd
 		};
 
 		var json = JsonSerializer.Serialize(jsonData, options);
-		var filePath = Path.Combine(CS2_SimpleAdmin.Instance.ModuleDirectory, "data", "admins.json");
+		var filePath = Path.Combine(CS2_SimpleAdmin.Instance.DataPath, "admins.json");
 
 		await File.WriteAllTextAsync(filePath, json);
 

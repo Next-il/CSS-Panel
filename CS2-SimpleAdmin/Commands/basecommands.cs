@@ -510,19 +510,24 @@ public partial class CS2_SimpleAdmin
             await PermissionManager.CreateGroupsJsonFile();
             await PermissionManager.CreateAdminsJsonFile();
 
-            var adminsFile = await File.ReadAllTextAsync(Instance.ModuleDirectory + "/data/admins.json");
-            var groupsFile = await File.ReadAllTextAsync(Instance.ModuleDirectory + "/data/groups.json");
+            var adminsFile = await File.ReadAllTextAsync(Instance.DataPath + "/admins.json");
+            var groupsFile = await File.ReadAllTextAsync(Instance.DataPath + "/groups.json");
+
+			if(Config.DataFolder != null)
+			{	
+				Console.WriteLine($"[CS2-SimpleAdmin] data directory: {Instance.DataPath}");
+			}
 
             await Server.NextWorldUpdateAsync(() =>
             {
                 AddTimer(1, () =>
                 {
                     if (!string.IsNullOrEmpty(adminsFile))
-                        AddTimer(2.0f, () => AdminManager.LoadAdminData(ModuleDirectory + "/data/admins.json"));
+                        AddTimer(2.0f, () => AdminManager.LoadAdminData(Instance.DataPath + "/admins.json"));
                     if (!string.IsNullOrEmpty(groupsFile))
-                        AddTimer(3.0f, () => AdminManager.LoadAdminGroups(ModuleDirectory + "/data/groups.json"));
+                        AddTimer(3.0f, () => AdminManager.LoadAdminGroups(Instance.DataPath + "/groups.json"));
                     if (!string.IsNullOrEmpty(adminsFile))
-                        AddTimer(4.0f, () => AdminManager.LoadAdminData(ModuleDirectory + "/data/admins.json"));
+                        AddTimer(4.0f, () => AdminManager.LoadAdminData(Instance.DataPath + "/admins.json"));
 
                     _logger?.LogInformation("Loaded admins!");
                 });
